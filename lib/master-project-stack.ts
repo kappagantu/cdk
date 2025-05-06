@@ -6,12 +6,14 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import { InstanceType } from 'aws-cdk-lib/aws-ec2';
 import * as fs from 'fs';
 import { KubectlV28Layer } from '@aws-cdk/lambda-layer-kubectl-v28';
+import { EksDashboard } from './EksDashboard';
 
 export class MasterProjectStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
+    let vpc : ec2.Vpc,eksCluster;
     this.deployFile().then((deploymentJson) => {
-      let vpc,eksCluster;
+      
       const mastersRole = new cdk.aws_iam.Role(this, 'MastersRole', {
         assumedBy: new cdk.aws_iam.ArnPrincipal('arn:aws:iam::942306984159:user/serverless-admin'), 
       });
@@ -19,6 +21,17 @@ export class MasterProjectStack extends cdk.Stack {
         vpc = new ec2.Vpc(this, deploymentJson.vpc.name, {
           ipAddresses: ec2.IpAddresses.cidr('10.0.0.0/16'),
           maxAzs: 2,
+          subnetConfiguration: [
+            {
+              name: 'Public',
+              subnetType: ec2.SubnetType.PUBLIC,
+              mapPublicIpOnLaunch: true,
+            },
+            {
+              name: 'Private',
+              subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
+            },
+          ],
         });
       }
       if(deploymentJson?.eks) {
@@ -44,9 +57,15 @@ export class MasterProjectStack extends cdk.Stack {
           maxSize: eksCluster.node.tryGetContext("node_group_max_size"),
           diskSize: 100,
           amiType: eks.NodegroupAmiType.AL2_X86_64,
-          capacityType: eks.CapacityType.SPOT, 
+          capacityType: eks.CapacityType.ON_DEMAND, 
+          subnets: { // Explicitly specify the public subnets
+            subnets: vpc.publicSubnets,
+          },
         });
-    
+
+        new EksDashboard(this, 'EksDashboard', {
+          cluster: eksCluster,
+        });
       }
     });
   }
