@@ -3,7 +3,7 @@ const { marshall, unmarshall } = require("@aws-sdk/util-dynamodb");
 
 const client = new DynamoDBClient({ region: "us-west-2" }); 
 
-const tableName = "CdkProjectStack-testTableFD9E8557-EL3RO2KEQF6C"; 
+const tableName = process.env.testTable; 
 
 async function queryDynamoDB() {
     try {

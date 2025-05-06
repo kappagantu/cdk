@@ -44,8 +44,10 @@ export class CdkProjectStack extends cdk.Stack {
         };
         for( let i = 0; i < landaList.length; i++) {
           table.grantReadWriteData(landaList[i]);
+          landaList[i].addEnvironment(table.node.id,table.tableName);
         }
       }
+      new cdk.CfnOutput(this, `created tableName `, { value: table.node.id });
     }
   }
 
