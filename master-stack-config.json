@@ -1,0 +1,8 @@
+{
+    "vpc": {
+        "name" : "master-vpc"
+    },
+    "eks" : {
+        "name" : "Master-Eks"
+    }
+}
