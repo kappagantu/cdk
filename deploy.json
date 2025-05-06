@@ -1,0 +1,37 @@
+{
+    "lambdas": [
+        {
+            "service": "example",
+            "type": "lambda",
+            "language": "java",
+            "memory": "258",
+            "handler": "com.example.MyLambdaFunction::handleRequest",
+            "codePath": "/Users/venkatakappagantu/data/hello-cdk/lambda/target/example-java-1.0-SNAPSHOT.jar",
+            "environmentProperties": {
+                "NAME": "Rama",
+                "CITY": "Cerritos"
+            }
+        },
+        {
+            "service": "hello",
+            "type": "lambda",
+            "language": "typeScript",
+            "memory": "258",
+            "handler": "app.handlerMethod",
+            "environmentProperties": {
+                "NAME": "Rama",
+                "CITY": "Cerritos"
+            }
+        }
+    ],
+    "tables" : [
+        {
+            "name" : "testTable",
+            "dbType" : "dynamodb",
+            "primaryKey" : "id",
+            "primaryKeyType" : "string",
+            "sortKey" : "type",
+            "ttlEnabled" : true
+        }
+    ]
+}
