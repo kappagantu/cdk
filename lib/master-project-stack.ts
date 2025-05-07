@@ -10,12 +10,17 @@ import { EksDashboard } from './EksDashboard';
 
 export class MasterProjectStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+    const cdk_principal = process.env.cdk_principal;
+    if(cdk_principal == null) {
+      //command: export cdk_principal=$(aws sts get-caller-identity | jq -r .Arn)
+      throw Error('CDK user arn should be set to cdk_principal envronment variable : ');
+    }
     super(scope, id, props);
     let vpc : ec2.Vpc,eksCluster;
     this.deployFile().then((deploymentJson) => {
       
       const mastersRole = new cdk.aws_iam.Role(this, 'MastersRole', {
-        assumedBy: new cdk.aws_iam.ArnPrincipal('arn:aws:iam::942306984159:user/serverless-admin'), 
+        assumedBy: new cdk.aws_iam.ArnPrincipal(cdk_principal), 
       });
       if (deploymentJson?.vpc) {
         vpc = new ec2.Vpc(this, deploymentJson.vpc.name, {
