@@ -2,19 +2,19 @@
 
 This project leverages the [AWS Cloud Development Kit (CDK)](https://docs.aws.amazon.com/cdk/) in **TypeScript** to dynamically provision infrastructure components based on a deployment configuration file (`deploy.json`).
 
-## ✅ What It Does
+## What It Does
 
 The CDK stack includes:
 
-* 📦 **AWS Lambda Functions** (Node.js or Java)
-* 📂 **Amazon DynamoDB Tables** (with optional TTL)
-* ☸️ **Base Amazon EKS (Elastic Kubernetes Service) Cluster**
+* **AWS Lambda Functions** (Node.js or Java)
+* **Amazon DynamoDB Tables** (with optional TTL)
+* **Base Amazon EKS (Elastic Kubernetes Service) Cluster**
 
 Resources are created dynamically based on the configuration in `deploy.json`.
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 .
@@ -29,15 +29,15 @@ Resources are created dynamically based on the configuration in `deploy.json`.
 └── tsconfig.json
 ```
 
-> 📌 **Entry point for the CDK app** is `cdk/lib/cdk-project-stack.ts`.
+> **Entry point for the CDK app** is `cdk/lib/cdk-project-stack.ts`.
 
 ---
 
-## ⚙️ Configuration: `deploy.json`
+## Configuration: `deploy.json`
 
 The infrastructure is defined in a single file: `deploy.json`.
 
-### ✅ Example:
+### Example:
 
 ```json
 {
@@ -70,28 +70,28 @@ The infrastructure is defined in a single file: `deploy.json`.
 
 ---
 
-## 📦 Supported Features
+## Supported Features
 
-### 🧠 Lambda Functions
+### Lambda Functions
 
 * Dynamically created from `deploy.json`
 * Supports both Node.js (`node`) and Java (`java`)
 * Code location, handler, memory, and environment can be customized
 
-### 🗃️ DynamoDB Tables
+### DynamoDB Tables
 
 * Partition key support
 * Optional TTL configuration (based on a `TTL` attribute)
 * Grants read/write access to deployed Lambdas
 
-### ☸️ EKS Cluster
+### EKS Cluster
 
 * If `eks.enabled` is `true`, a base EKS cluster is created
 * Configurable cluster name and Kubernetes version
 
 ---
 
-## 🚀 Deployment Steps
+## Deployment Steps
 
 1. **Install dependencies:**
 
@@ -113,7 +113,7 @@ cdk deploy
 
 ---
 
-## 🧹 Clean Up
+## Clean Up
 
 To tear down the entire infrastructure:
 
@@ -123,7 +123,7 @@ cdk destroy
 
 ---
 
-## 📝 Notes
+## Notes
 
 * Lambdas and tables are deployed **only if** defined in `deploy.json`.
 * TTL functionality requires a `TTL` field in your data (e.g., UNIX epoch time).
@@ -132,7 +132,7 @@ cdk destroy
 
 ---
 
-## 🧾 License
+## License
 
 This project is licensed under the **MIT License**.
 
