@@ -20,7 +20,7 @@ Resources are created dynamically based on the configuration in `deploy.json`.
 .
 ├── cdk/
 │   ├── bin/
-│   │   └── cdk.ts                    # CDK app entry point
+│   │   └── cdk-project.ts                   # CDK app entry point
 │   └── lib/
 │       └── cdk-project-stack.ts     # CDK stack logic (Lambda, DynamoDB, EKS)
 ├── lambdas/                         # Default Lambda code location
