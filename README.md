@@ -1,14 +1,139 @@
-# Welcome to your CDK TypeScript project
+# AWS CDK Deployment Project (TypeScript)
 
-This is a blank project for CDK development with TypeScript.
+This project leverages the [AWS Cloud Development Kit (CDK)](https://docs.aws.amazon.com/cdk/) in **TypeScript** to dynamically provision infrastructure components based on a deployment configuration file (`deploy.json`).
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+## ✅ What It Does
 
-## Useful commands
+The CDK stack includes:
 
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `npx cdk deploy`  deploy this stack to your default AWS account/region
-* `npx cdk diff`    compare deployed stack with current state
-* `npx cdk synth`   emits the synthesized CloudFormation template
+* 📦 **AWS Lambda Functions** (Node.js or Java)
+* 📂 **Amazon DynamoDB Tables** (with optional TTL)
+* ☸️ **Base Amazon EKS (Elastic Kubernetes Service) Cluster**
+
+Resources are created dynamically based on the configuration in `deploy.json`.
+
+---
+
+## 📁 Project Structure
+
+```
+.
+├── cdk/
+│   ├── bin/
+│   │   └── cdk.ts                    # CDK app entry point
+│   └── lib/
+│       └── cdk-project-stack.ts     # CDK stack logic (Lambda, DynamoDB, EKS)
+├── lambdas/                         # Default Lambda code location
+├── deploy.json                      # Deployment configuration file
+├── package.json
+└── tsconfig.json
+```
+
+> 📌 **Entry point for the CDK app** is `cdk/lib/cdk-project-stack.ts`.
+
+---
+
+## ⚙️ Configuration: `deploy.json`
+
+The infrastructure is defined in a single file: `deploy.json`.
+
+### ✅ Example:
+
+```json
+{
+  "lambdas": [
+    {
+      "service": "user-service",
+      "language": "node",
+      "codePath": "./lambdas/user",
+      "handler": "index.handler",
+      "memory": "512",
+      "environmentProperties": {
+        "ENV": "prod"
+      }
+    }
+  ],
+  "tables": [
+    {
+      "name": "UserTable",
+      "primaryKey": "userId",
+      "ttlEnabled": true
+    }
+  ],
+  "eks": {
+    "enabled": true,
+    "clusterName": "BaseCluster",
+    "version": "1.29"
+  }
+}
+```
+
+---
+
+## 📦 Supported Features
+
+### 🧠 Lambda Functions
+
+* Dynamically created from `deploy.json`
+* Supports both Node.js (`node`) and Java (`java`)
+* Code location, handler, memory, and environment can be customized
+
+### 🗃️ DynamoDB Tables
+
+* Partition key support
+* Optional TTL configuration (based on a `TTL` attribute)
+* Grants read/write access to deployed Lambdas
+
+### ☸️ EKS Cluster
+
+* If `eks.enabled` is `true`, a base EKS cluster is created
+* Configurable cluster name and Kubernetes version
+
+---
+
+## 🚀 Deployment Steps
+
+1. **Install dependencies:**
+
+```bash
+npm install
+```
+
+2. **Bootstrap your AWS environment** (required once per environment):
+
+```bash
+cdk bootstrap
+```
+
+3. **Deploy the stack:**
+
+```bash
+cdk deploy
+```
+
+---
+
+## 🧹 Clean Up
+
+To tear down the entire infrastructure:
+
+```bash
+cdk destroy
+```
+
+---
+
+## 📝 Notes
+
+* Lambdas and tables are deployed **only if** defined in `deploy.json`.
+* TTL functionality requires a `TTL` field in your data (e.g., UNIX epoch time).
+* EKS cluster creation is controlled by the `eks.enabled` flag.
+* All outputs such as Lambda ARNs and DynamoDB table names are printed after deployment.
+
+---
+
+## 🧾 License
+
+This project is licensed under the **MIT License**.
+
+---
